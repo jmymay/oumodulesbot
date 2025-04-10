@@ -2,15 +2,11 @@
     schema-version = "0.2"
 
 [io.buildpacks]
-    builder = "paketobuildpacks/builder-jammy-base"
+    builder = "paketobuildpacks/builder-jammy-full"
 
 [[ io.buildpacks.group ]]
     id = "paketo-buildpacks/python"
     version = "2.25.1"
-
-[[ io.buildpacks.group ]]
-    id = "paketo-buildpacks/procfile"
-    version = "5.11.0"
 
 [[ io.buildpacks.build.env ]]
     name = "BP_CPYTHON_VERSION"
