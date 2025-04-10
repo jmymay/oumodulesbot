@@ -13,7 +13,7 @@ authors = ["Jerzy Kozera <jerzy.kozera@gmail.com>"]
 python = "^3.11"
 pylru = "^1.2.1"
 httpx = "^0.28.1"
-google-cloud-firestore = "^2.19.0"
+google-cloud-firestore = "^2.20.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.0.0"
