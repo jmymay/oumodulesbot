@@ -2,7 +2,7 @@
     schema-version = "0.2"
 
 [io.buildpacks]
-    builder = "paketobuildpacks/builder-jammy-full"
+    builder = "paketobuildpacks/builder-jammy-base"
 
 [[ io.buildpacks.group ]]
     id = "paketo-buildpacks/python"
