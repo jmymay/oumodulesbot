@@ -1,5 +1,5 @@
 ### Copied from https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-c-plus-plus-service#writing
-# Version: 2024.07.26.4 (modify this line to trigger CI build)
+# Version: 2025.04.10.0 (modify this line to trigger CI build)
 
 # We chose Alpine to build the image because it has good support for creating
 # statically-linked, small programs.
@@ -29,7 +29,7 @@ RUN apk update && \
 # Use `vcpkg`, a package manager for C++, to install release binaries only
 WORKDIR /usr/local/vcpkg
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
-RUN curl -sSL "https://github.com/Microsoft/vcpkg/archive/2024.07.12.tar.gz" | \
+RUN curl -sSL "https://github.com/Microsoft/vcpkg/archive/2025.03.19.tar.gz" | \
     tar --strip-components=1 -zxf - \
     && for path in triplets/*.cmake triplets/community/*.cmake ; do \
         echo 'set(VCPKG_BUILD_TYPE release)' >> $path ; \
