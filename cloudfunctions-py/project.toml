@@ -6,7 +6,7 @@
 
 [[ io.buildpacks.group ]]
     id = "paketo-buildpacks/python"
-    version = "2.26.0"
+    version = "2.27.1"
 
 [[ io.buildpacks.build.env ]]
     name = "BP_CPYTHON_VERSION"
