@@ -1,4 +1,4 @@
- #include "interaction_lib.h"
+#include "interaction_lib.h"
 
 #include <google/protobuf/stubs/port.h>
 #include <nlohmann/json.hpp>
@@ -76,7 +76,7 @@ private:
       data["flags"] = EPHEMERAL;
     }
     std::string channel_id = message_["channel_id"];
-    if (!target_id_.empty()) {  
+    if (!target_id_.empty()) {
       nlohmann::json button = {
           {{"type", 2},  // Button
           {"style", 5}, // Link

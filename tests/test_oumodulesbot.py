@@ -39,14 +39,17 @@ E2E_EXAMPLES = [
         "A123: [Mocked active module](<fake_url1>)" + RESPONSE_SUFFIX,
     ),
     ModuleExample(
-        "B321", False, "B321: Mocked inactive module" + RESPONSE_SUFFIX,
+        "B321",
+        False,
+        "B321: Mocked inactive module" + RESPONSE_SUFFIX,
     ),
     ModuleExample(
         "B31",
         False,
         "B31: [Mocked inactive-actually-active qualification](<{url}>)".format(
             url=QUALIFICATION_URL_TPL.format(code="b31")
-        ) + RESPONSE_SUFFIX,
+        )
+        + RESPONSE_SUFFIX,
     ),
     ModuleExample(
         "A012",
