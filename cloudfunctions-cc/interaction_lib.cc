@@ -10,13 +10,25 @@
 namespace ou_modules_bot_interaction {
 
 constexpr int EPHEMERAL = 1 << 6;
+constexpr int INTERACTION_COMMAND = 2;
+constexpr int INTERACTION_MESSAGE = 3;
 
 class Handler::Impl {
 public:
   Impl(nlohmann::json::const_reference request_json) {
     nlohmann::json::const_reference data = request_json["data"];
-    target_id_ = data["target_id"];
-    message_ = data["/resolved/messages"_json_pointer][target_id_];
+    if (request_json["type" == INTERACTION_MESSAGE) {
+        target_id_ = data["target_id"];
+        message_ = data["/resolved/messages"_json_pointer][target_id_];
+    } else {
+      for (const auto& option : data["options"]) {
+        if (option["name"] == "modules") {
+          message_["content"] = option["value"];
+          message_["channel_id"] = request_json["channel_id"];
+          break;
+        }
+      }
+    }
     guild_id_ = request_json.value("guild_id", "@me");
     token_ = request_json["token"];
     interaction_id_ = request_json["id"];

@@ -81,25 +81,26 @@ class FoundModules:
     def as_response_json(self, input_data):
         guild_id = input_data["guild_id"]
         channel_id = input_data["message"]["channel_id"]
-        target_id = input_data["target_id"]
+        target_id = input_data.get("target_id")
         url = (
             f"https://discord.com/channels/{guild_id}/{channel_id}/{target_id}"
         )
-        data = {
-            "components": [
-                {
-                    "type": 1,
-                    "components": [
-                        {
-                            "type": 2,
-                            "style": 5,
-                            "label": "Jump to referenced message",
-                            "url": url,
-                        }
-                    ],
-                }
-            ],
-        }
+        if target_id:
+            data = {
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "style": 5,
+                                "label": "Jump to referenced message",
+                                "url": url,
+                            }
+                        ],
+                    }
+                ],
+            }
         if len(self.modules_list) > 1:
             data["content"] = "Multiple results found."
             data["embeds"] = self._multiple_modules_embeds()
