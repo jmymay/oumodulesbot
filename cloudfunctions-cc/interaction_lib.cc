@@ -78,16 +78,18 @@ private:
       data["flags"] = EPHEMERAL;
     }
     std::string channel_id = message_["channel_id"];
-    nlohmann::json button = {
-        {{"type", 2},  // Button
-         {"style", 5}, // Link
-         {"label", "Jump to referenced message"},
-         {"url", "https://discord.com/channels/" + std::string(guild_id_) +
-                     "/" + std::string(channel_id) + "/" +
-                     std::string(target_id_)}}};
+    if (!target_id_.empty()) {  
+      nlohmann::json button = {
+          {{"type", 2},  // Button
+          {"style", 5}, // Link
+          {"label", "Jump to referenced message"},
+          {"url", "https://discord.com/channels/" + std::string(guild_id_) +
+                      "/" + std::string(channel_id) + "/" +
+                      std::string(target_id_)}}};
 
-    data["components"] = {{{"type", 1}, // Action Row
-                           {"components", button}}};
+      data["components"] = {{{"type", 1}, // Action Row
+                            {"components", button}}};
+    }
 
     nlohmann::json result_json = {
         {"type", 4}, // CHANNEL_MESSAGE_WITH_SOURCE
