@@ -11,6 +11,10 @@ pytestmark = pytest.mark.asyncio
 
 
 QUALIFICATION_URL_TPL = "http://www.open.ac.uk/courses/qualifications/{code}"
+RESPONSE_SUFFIX = (
+    "\nNote: !codes are being retired. Please use /oulookup, or skip !"
+    " and right-click/long-touch a message → Apps → OU Lookup."
+)
 
 
 @pytest.fixture(autouse=True)
@@ -26,10 +30,6 @@ def mock_cache(monkeypatch):
 
     monkeypatch.setattr(json, "load", mock_load)
 
-RESPONSE_SUFFIX = (
-    "\nNote: !codes are being retired. Please use /oulookup, or skip !"
-    " and right-click/long-touch a message → Apps → OU Lookup."
-)
 
 ModuleExample = namedtuple("ModuleExample", "code,active,result")
 E2E_EXAMPLES = [
