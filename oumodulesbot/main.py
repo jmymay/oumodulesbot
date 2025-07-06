@@ -190,7 +190,10 @@ class OUModulesBot(discord.Client):
             # that `content` is set below
             return
 
-        content += "\nNote: !codes are being retired. Please use /oulookup, or skip ! and right-click/long-touch a message → Apps → OU Lookup."
+        content += (
+            "\nNote: !codes are being retired. Please use /oulookup, or skip !"
+            " and right-click/long-touch a message → Apps → OU Lookup."
+        )
 
         embeds = [embed] if len(results) > 1 else []
         if modify_message:

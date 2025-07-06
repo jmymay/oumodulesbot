@@ -85,7 +85,8 @@ class FoundModules:
         data = {}
         if target_id:
             url = (
-                f"https://discord.com/channels/{guild_id}/{channel_id}/{target_id}"
+                "https://discord.com/channels/"
+                f"{guild_id}/{channel_id}/{target_id}"
             )
             data = {
                 "components": [
