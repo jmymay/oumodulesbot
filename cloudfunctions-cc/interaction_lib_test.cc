@@ -6,7 +6,7 @@
 
 nlohmann::json MakeRequest(std::string content) {
   nlohmann::json request = R"({
-        "type": 2,
+        "type": 3,
         "data": {
             "target_id": "foo",
             "resolved": {

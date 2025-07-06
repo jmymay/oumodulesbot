@@ -21,11 +21,11 @@ public:
         target_id_ = data["target_id"];
         message_ = data["/resolved/messages"_json_pointer][target_id_];
     } else {
-      message_ = nlohmann::json::value_t::object;
+      message_["content"] = "";
+      message_["channel_id"] = request_json["channel_id"];
       for (const auto& option : data["options"]) {
         if (option["name"] == "modules") {
           message_["content"] = option["value"];
-          message_["channel_id"] = request_json["channel_id"];
           break;
         }
       }
