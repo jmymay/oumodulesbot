@@ -10,14 +10,12 @@
 namespace ou_modules_bot_interaction {
 
 constexpr int EPHEMERAL = 1 << 6;
-constexpr int INTERACTION_COMMAND = 2;
-constexpr int INTERACTION_MESSAGE = 3;
 
 class Handler::Impl {
 public:
   Impl(nlohmann::json::const_reference request_json) {
     nlohmann::json::const_reference data = request_json["data"];
-    if (request_json["type"] == INTERACTION_MESSAGE) {
+    if (data["target_id"].is_string()) {
         target_id_ = data["target_id"];
         message_ = data["/resolved/messages"_json_pointer][target_id_];
     } else {
