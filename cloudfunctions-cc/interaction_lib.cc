@@ -17,7 +17,7 @@ class Handler::Impl {
 public:
   Impl(nlohmann::json::const_reference request_json) {
     nlohmann::json::const_reference data = request_json["data"];
-    if (request_json["type" == INTERACTION_MESSAGE) {
+    if (request_json["type"] == INTERACTION_MESSAGE) {
         target_id_ = data["target_id"];
         message_ = data["/resolved/messages"_json_pointer][target_id_];
     } else {
