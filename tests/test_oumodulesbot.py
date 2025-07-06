@@ -38,13 +38,15 @@ E2E_EXAMPLES = [
         True,
         "A123: [Mocked active module](<fake_url1>)" + RESPONSE_SUFFIX,
     ),
-    ModuleExample("B321", False, "B321: Mocked inactive module"),
+    ModuleExample(
+        "B321", False, "B321: Mocked inactive module" + RESPONSE_SUFFIX,
+    ),
     ModuleExample(
         "B31",
         False,
         "B31: [Mocked inactive-actually-active qualification](<{url}>)".format(
-            url=QUALIFICATION_URL_TPL.format(code="b31") + RESPONSE_SUFFIX,
-        ),
+            url=QUALIFICATION_URL_TPL.format(code="b31")
+        ) + RESPONSE_SUFFIX,
     ),
     ModuleExample(
         "A012",
@@ -150,7 +152,9 @@ async def test_end_to_end_update():
 @mock.patch("httpx.AsyncClient.get")
 async def test_end_to_end_missing_module(get_mock):
     bot = OUModulesBot()
-    fake_module = ModuleExample("XYZ999", False, "XYZ999: Some Random Module")
+    fake_module = ModuleExample(
+        "XYZ999", False, "XYZ999: Some Random Module" + RESPONSE_SUFFIX
+    )
     message = create_mock_message(f"foo !{fake_module.code}")
     expected_url = (
         "http://www.open.ac.uk/library/digital-archive/module/"
