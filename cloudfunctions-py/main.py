@@ -82,10 +82,11 @@ class FoundModules:
         guild_id = input_data["guild_id"]
         channel_id = input_data["message"]["channel_id"]
         target_id = input_data.get("target_id")
-        url = (
-            f"https://discord.com/channels/{guild_id}/{channel_id}/{target_id}"
-        )
+        data = {}
         if target_id:
+            url = (
+                f"https://discord.com/channels/{guild_id}/{channel_id}/{target_id}"
+            )
             data = {
                 "components": [
                     {
