@@ -18,7 +18,7 @@ google-cloud-firestore = "^2.20.1"
 [tool.poetry.group.dev.dependencies]
 black = "^25.0.0"
 flake8 = "^7.2.0"
-pytest = "^8.4.1"
+pytest = "^8.4.2"
 pytest-asyncio = "^1.0.0"
 mypy = "^1.16.1"
 isort = "^6.0"
