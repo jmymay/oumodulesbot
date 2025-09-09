@@ -9,7 +9,7 @@ description = ""
 authors = ["Jerzy Kozera <jerzy.kozera@gmail.com>"]
 
 [tool.poetry.dependencies]
-"discord.py" = "^2.5.2"
+"discord.py" = "^2.6.3"
 python = "^3.11"
 pylru = "^1.2.1"
 httpx = "^0.28.1"
