@@ -89,25 +89,17 @@ class OUModulesBackend:
         title = cached_result[0]
         url = cached_result[1]
         # try to make sure URL really isn't reachable, by autogenerating one:
-        if (not url) and (active_url := await self._get_url_if_active(code)):
-            url = active_url
+        if (not url) and (response := await self._get_if_active(code)):
+            url = response.url
             logger.info(f"{code} has no url in cache, but {url} is reachable")
             self.cache[code] = (title, url)
         return Result(code, title, url)
 
     async def _try_url(self, code) -> Optional[Result]:
-        if active_url := await self._get_url_if_active(code):
-            async with make_client() as client:
-                try:
-                    result = await client.get(
-                        active_url, follow_redirects=True
-                    )
-                except httpx.ReadTimeout:
-                    logger.warning("www.open.ac.uk timeout")
-                    return None
-            if found_title := find_title_in_html(result.text):
-                logger.info(f"{code} found via {active_url}")
-                return Result(code, found_title, active_url)
+        if response := await self._get_if_active(code):
+            if found_title := find_title_in_html(response.text):
+                logger.info(f"{code} found via {response.url}")
+                return Result(code, found_title, response.url)
         logger.info(f"{code} can't be found via module URL")
         return None
 
@@ -172,49 +164,52 @@ class OUModulesBackend:
 
         return result
 
-    async def _is_active_url(self, url: str, code: str) -> bool:
+    async def _is_active_url(
+        self, url: str, code: str
+    ) -> tuple[bool, httpx.Response]:
         """
         Check if given URL looks like a valid URL for a given code, i.e.
         resolves to 200, and doesn't redirect away to a different page.
 
-        OU redirects to places like /courses/ sometimes which is a masked way
-        of saying '404'. However 301 redirects don't always indicate that
-        modules aren't available, because they sometimes point to a different
-        page for the same module/qualification.
+        OU used to redirect to places like /courses/ sometimes which was
+        a masked way of saying '404'. However 301 redirects don't always
+        indicate that modules aren't available, because they sometimes point
+        to a different page for the same module/qualification.
 
         Thus a compromise is used here by allowing redirects, but only if the
         destination page URL includes the module code.
         """
         async with make_client() as client:
             try:
-                response = await client.head(
+                response = await client.get(
                     url,
                     follow_redirects=True,
                     timeout=3,
                 )
             except httpx.ReadTimeout:
                 logger.warning("_is_active_url timeout")
-                return False
+                return False, None
             correct_redirect = code.lower() in str(response.url).lower()
-            return correct_redirect and response.status_code == 200
+            if correct_redirect and response.status_code == 200:
+                return True, response
+            else:
+                logger.warning(
+                    f"URL {url} for {code} gave "
+                    f"{response.status_code} at {response.url}"
+                )
+                return False, None
 
-    async def _get_url_if_active(self, code: str) -> Optional[str]:
+    async def _get_if_active(self, code: str) -> Optional[httpx.Response]:
         """
-        Return module's URL for given module code, if available.
+        Return module's URL for given uncached module code, if available.
 
-        Tries to lookup in cache, and if it fails then it tries to provide
-        the URL with a well-known template (see get_module_url from ou_utils).
-
-        The template-based URL is returned only if it passes a HTTP check.
+        Tries to provide a validated Response using well-known template URLs
+        (see get_module_url from ou_utils).
         """
-        # 1. Try cached URL
-        _, url = self.cache.get(code.upper(), (None, None))
-        if url:
-            return url
-
-        # 2. Try constructing it from code
+        # 1. Try constructing it from code
         for try_url in get_possible_urls_from_code(code):
-            if await self._is_active_url(try_url, code):
-                return try_url
+            active, response = await self._is_active_url(try_url, code)
+            if active:
+                return response
 
         return None

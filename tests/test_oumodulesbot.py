@@ -73,36 +73,36 @@ def create_mock_message(contents, send_result="foo", id_override=None):
     return message
 
 
-async def process_message(bot, message, result):
+async def process_message(bot, message, result, client_mock):
     """
     Pass the message to the bot, optionally verifying that appropriate checks
     are made for inactive modules.
     """
-
-    with mock.patch("httpx.AsyncClient.head") as head_mock:
-        if "actually-active" in result.result:
-            head_mock.return_value.status_code = 200
-            head_mock.return_value.url = result.code
-        await bot.on_message(message)
-        if not result.active:
-            code = result.code.lower()
-            # inactive results are double-checked with http to provide a link
-            # in case the inactive cache.json status is no longer valid:
-            if "qualification" not in result.result:
-                prefix = "http://www.open.ac.uk/courses"
-                urls = [
-                    f"{prefix}/qualifications/details/{code}",
-                    f"{prefix}/modules/{code}",
-                ]
-            else:
-                urls = [QUALIFICATION_URL_TPL.format(code=code)]
-            head_mock.assert_has_calls(
-                [
-                    mock.call(url, follow_redirects=True, timeout=3)
-                    for url in urls
-                ],
-                any_order=True,
-            )
+    if "actually-active" in result.result:
+        client_mock.get.return_value.status_code = 200
+        client_mock.get.return_value.url = QUALIFICATION_URL_TPL.format(
+            code=result.code.lower()
+        )
+    await bot.on_message(message)
+    if not result.active:
+        code = result.code.lower()
+        # inactive results are double-checked with http to provide a link
+        # in case the inactive cache.json status is no longer valid:
+        if "qualification" not in result.result:
+            prefix = "http://www.open.ac.uk/courses"
+            urls = [
+                f"{prefix}/qualifications/details/{code}",
+                f"{prefix}/modules/{code}",
+            ]
+        else:
+            urls = [QUALIFICATION_URL_TPL.format(code=code)]
+        client_mock.assert_has_calls(
+            [
+                mock.call.get(url, follow_redirects=True, timeout=3)
+                for url in urls
+            ],
+            any_order=True,
+        )
 
 
 @pytest.mark.parametrize("module", E2E_EXAMPLES)
@@ -114,7 +114,15 @@ async def test_end_to_end_create(module):
     """
     bot = OUModulesBot()
     message = create_mock_message(f"foo !{module.code}")
-    await process_message(bot, message, module)
+    with mock.patch(
+        "httpx.AsyncClient", autospec=True, spec_set=True
+    ) as client_class_mock:
+        await process_message(
+            bot,
+            message,
+            module,
+            client_class_mock.return_value.__aenter__.return_value,
+        )
     message.reply.assert_called_once_with(module.result, embeds=[])
 
 
@@ -137,14 +145,30 @@ async def test_end_to_end_update():
         # the id must be the same to trigger `edit`:
         id_override="original_id",
     )
-    await process_message(bot, message, first_post)
+    with mock.patch(
+        "httpx.AsyncClient", autospec=True, spec_set=True
+    ) as client_class_mock:
+        await process_message(
+            bot,
+            message,
+            first_post,
+            client_class_mock.return_value.__aenter__.return_value,
+        )
 
     for update in updates:
         update_message = create_mock_message(
             f"foo !{update.code}",
             id_override="original_id",
         )
-        await process_message(bot, update_message, update)
+        with mock.patch(
+            "httpx.AsyncClient", autospec=True, spec_set=True
+        ) as client_class_mock:
+            await process_message(
+                bot,
+                update_message,
+                update,
+                client_class_mock.return_value.__aenter__.return_value,
+            )
         # verify that the bot's response is updated:
         result_message.edit.assert_called_once_with(
             content=update.result, embeds=[]
@@ -152,8 +176,9 @@ async def test_end_to_end_update():
         result_message.edit.reset_mock()
 
 
-@mock.patch("httpx.AsyncClient.get")
-async def test_end_to_end_missing_module(get_mock):
+@mock.patch("httpx.AsyncClient", autospec=True, spec_set=True)
+async def test_end_to_end_missing_module(client_class_mock):
+    client_mock = client_class_mock.return_value.__aenter__.return_value
     bot = OUModulesBot()
     fake_module = ModuleExample(
         "XYZ999", False, "XYZ999: Some Random Module" + RESPONSE_SUFFIX
@@ -165,7 +190,7 @@ async def test_end_to_end_missing_module(get_mock):
     )
 
     # return matching data from httpx:
-    get_mock.side_effect = lambda url, **kw: {
+    client_mock.get.side_effect = lambda url, **kw: {
         expected_url: mock.Mock(
             # OUDA HTML:
             content=(
@@ -183,11 +208,11 @@ async def test_end_to_end_missing_module(get_mock):
     )
 
     # ensure module name is returned to Discord:
-    await process_message(bot, message, fake_module)
+    await process_message(bot, message, fake_module, client_mock)
     message.reply.assert_called_once_with(fake_module.result, embeds=[])
 
     # ensure httpx was called with appropriate URL:
-    get_mock.assert_any_call(
+    client_mock.get.assert_any_call(
         # ignore SPARQL calls
         expected_url
     )
