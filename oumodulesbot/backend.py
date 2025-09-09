@@ -70,7 +70,7 @@ def make_client():
     return httpx.AsyncClient(headers=headers)
 
 
-def get_cache_json():
+def get_cache_json() -> dict[str, list[str | None]]:
     cache_file = importlib.resources.files(oumodulesbot) / "cache.json"
     return json.load(cache_file.open("r"))
 
@@ -90,7 +90,7 @@ class OUModulesBackend:
         url = cached_result[1]
         # try to make sure URL really isn't reachable, by autogenerating one:
         if (not url) and (response := await self._get_if_active(code)):
-            url = response.url
+            url = str(response.url)
             logger.info(f"{code} has no url in cache, but {url} is reachable")
             self.cache[code] = (title, url)
         return Result(code, title, url)
@@ -166,7 +166,7 @@ class OUModulesBackend:
 
     async def _is_active_url(
         self, url: str, code: str
-    ) -> tuple[bool, httpx.Response]:
+    ) -> tuple[bool, httpx.Response | None]:
         """
         Check if given URL looks like a valid URL for a given code, i.e.
         resolves to 200, and doesn't redirect away to a different page.
