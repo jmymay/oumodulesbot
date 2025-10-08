@@ -6,4 +6,4 @@ OU Modules Bot is a project made for The Open University STEM Club's Discord. It
 
  * `/oulookup MU123` - will display MU123's title, with a link.
  * `/oulookup MST124 MST125` - will display both MST124 and MST125 titles, with links.
- * `/oulookup mst121 !m263 !m366` - old modules and lowercase are fine too! However, we don't provide links to discontinued modules.
+ * `/oulookup mst121 m263 m366` - old modules and lowercase are fine too! However, we don't provide links to discontinued modules.
