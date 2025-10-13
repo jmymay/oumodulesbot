@@ -1,4 +1,4 @@
-FROM python:3.13
+FROM python:3.14
 
 ADD oumodulesbot /oumodulesbot
 ADD poetry.lock pyproject.toml /
