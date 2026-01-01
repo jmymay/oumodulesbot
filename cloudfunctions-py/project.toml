@@ -2,7 +2,7 @@
     schema-version = "0.2"
 
 [io.buildpacks]
-    builder = "paketobuildpacks/ubuntu-noble-builder"
+    builder = "paketobuildpacks/builder-jammy-base"
 
 [[ io.buildpacks.group ]]
     id = "paketo-buildpacks/cpython"
