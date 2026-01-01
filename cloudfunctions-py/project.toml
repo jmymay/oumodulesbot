@@ -5,16 +5,8 @@
     builder = "paketobuildpacks/builder-jammy-base"
 
 [[ io.buildpacks.group ]]
-    id = "paketo-buildpacks/cpython"
-    version = "1.18.7"
-
-[[ io.buildpacks.group ]]
-    id = "paketo-buildpacks/procfile"
-    version = "5.12.0"
-
-[[ io.buildpacks.group ]]
-    id = "paketo-buildpacks/pip-install"
-    version = "0.7.11"
+    id = "paketo-buildpacks/python"
+    version = "2.40.0"
 
 [[ io.buildpacks.build.env ]]
     name = "BP_CPYTHON_VERSION"
