@@ -10,6 +10,11 @@
 
 [[ io.buildpacks.group ]]
     id = "paketo-buildpacks/procfile"
+    version = "5.12.0"
+
+[[ io.buildpacks.group ]]
+    id = "paketo-buildpacks/pip-install"
+    version = "0.7.11"
 
 [[ io.buildpacks.build.env ]]
     name = "BP_CPYTHON_VERSION"
