@@ -10,4 +10,4 @@
 
 [[ io.buildpacks.build.env ]]
     name = "BP_CPYTHON_VERSION"
-    value = "3.14.*"
+    value = "3.13.*"
