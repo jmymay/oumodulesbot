@@ -5,7 +5,7 @@ from typing import Iterable
 Result = namedtuple("Result", "code,title,url")
 
 
-MODULE_CODE_RE_TEMPLATE = r"[a-zA-Z]{1,6}[0-9]{1,3}(?:-[a-zA-Z]{1,5})?"
+MODULE_CODE_RE_TEMPLATE = r"[a-zA-Z]{1,6}[0-9]{3}(?:-[a-zA-Z]{1,5})?"
 # QD = Open Degree:
 QUALIFICATION_CODE_RE_TEMPLATE = (
     r"[a-zA-Z][0-9]{2}(?:-[a-zA-Z]{1,5})?|[qQ][dD]"

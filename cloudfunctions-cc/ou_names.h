@@ -13,7 +13,7 @@ namespace ou_modules_bot {
 
 namespace {
 inline boost::regex &GetOURegex() {
-  static boost::regex ou_regex("[a-zA-Z]{1,6}[0-9]{1,3}(?:-[a-zA-Z]{1,5})?|[a-"
+  static boost::regex ou_regex("[a-zA-Z]{1,6}[0-9]{3}(?:-[a-zA-Z]{1,5})?|[a-"
                                "zA-Z][0-9]{2}(?:-[a-zA-Z]{1,5})?|[qQ][dD]");
   return ou_regex;
 }
