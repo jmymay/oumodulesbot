@@ -5,7 +5,7 @@ from pathlib import Path
 
 from oumodulesbot.make_cache import dump_readable_json
 
-CACHE_FILE = Path(__file__).parent / "cache.json"
+CACHE_FILE = Path(__file__).parent.parent / "cache.json"
 
 
 def main():
