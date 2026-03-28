@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Parse /courses/modules/ and add any modules not already in cache.json."""
+
 import json
 import re
 from pathlib import Path
