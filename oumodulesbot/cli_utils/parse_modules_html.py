@@ -7,7 +7,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from oumodulesbot.make_cache import dump_readable_json
+from oumodulesbot.cli_utils.make_cache import dump_readable_json
 
 CACHE_FILE = Path(__file__).parent.parent / "cache.json"
 HTML_FILE = Path(__file__).parent.parent / "modules.html"

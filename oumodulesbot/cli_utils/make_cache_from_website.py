@@ -5,7 +5,7 @@ import sys
 import httpx
 from bs4 import BeautifulSoup  # type: ignore
 
-from oumodulesbot.make_cache import dump_readable_json
+from oumodulesbot.cli_utils.make_cache import dump_readable_json
 from oumodulesbot.ou_utils import MODULE_CODE_RE_TEMPLATE
 
 MODULE_RE = re.compile(
