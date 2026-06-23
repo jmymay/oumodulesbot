@@ -11,9 +11,6 @@ RUN strip /v/binary/interaction
 # Run tests
 RUN /v/binary/interaction_lib_test && /v/binary/verify_ed25519_test
 
-# Copy needed files
-RUN cp /v/binary/vcpkg_installed/*/share/grpc/roots.pem /v/binary
-
 # Create the final deployment image, using `scratch` (the empty Docker image)
 # as the starting point. Effectively we create an image that only contains
 # our program.
