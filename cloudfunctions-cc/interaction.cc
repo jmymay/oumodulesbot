@@ -2,7 +2,6 @@
 #include <google/cloud/functions/framework.h>
 #include <google/cloud/functions/http_request.h>
 #include <google/cloud/functions/http_response.h>
-#include <google/cloud/pubsub/blocking_publisher.h>
 #include <nlohmann/json.hpp>
 
 #include <string>
@@ -12,7 +11,6 @@
 
 namespace gcf = ::google::cloud::functions;
 namespace oubot = ::ou_modules_bot_interaction;
-namespace pubsub = ::google::cloud::pubsub;
 
 using ou_modules_bot::HexDecode;
 using ou_modules_bot::VerifyEd25519;
@@ -54,15 +52,6 @@ gcf::HttpResponse interactions(const gcf::HttpRequest request) {
   } else {
     oubot::Handler handler(request_json);
     result = handler.Handle();
-    if (handler.ShouldForwardToSlowBot()) {
-      auto publisher =
-          pubsub::BlockingPublisher(pubsub::MakeBlockingPublisherConnection());
-      auto id = publisher.Publish(
-          pubsub::Topic("ou-modules-bot", "interactions"),
-          pubsub::MessageBuilder{}.SetData(handler.PubSubJsonDump()).Build());
-      if (!id)
-        throw std::move(id).status();
-    }
   }
 
   return gcf::HttpResponse{}

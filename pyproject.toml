@@ -9,11 +9,9 @@ description = ""
 authors = ["Jerzy Kozera <jerzy.kozera@gmail.com>"]
 
 [tool.poetry.dependencies]
-"discord.py" = "^2.6.4"
 python = "^3.11"
-pylru = "^1.2.1"
 httpx = "^0.28.1"
-google-cloud-firestore = "^2.23.0"
+beautifulsoup4 = "^4.15.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^26.3.1"

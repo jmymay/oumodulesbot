@@ -93,34 +93,33 @@ TEST(InteractionLibTest, Handler_Handle_TwoKnownModules) {
                         "http://www.open.ac.uk/courses/modules/mst125"));
 }
 
-TEST(InteractionLibTest, Handler_Handle_ForwardToSlowBot) {
+TEST(InteractionLibTest, Handler_Handle_UnknownModule) {
   nlohmann::json request = MakeRequest("M999");
   ou_modules_bot_interaction::Handler handler(request);
+  nlohmann::json result = nlohmann::json::parse(handler.Handle());
 
-  EXPECT_EQ(handler.Handle(), R"({"type": 5})");
-
-  EXPECT_TRUE(handler.ShouldForwardToSlowBot());
-  EXPECT_EQ(nlohmann::json::parse(handler.PubSubJsonDump()), R"({
-    "interaction_id": "fake_request_id",
-    "message": {"channel_id": "fake_channel_id", "content": "M999"},
-    "target_id": "foo",
-    "guild_id": "fake_guild_id",
-    "token": "fake_token"})"_json);
+  auto response = GetResponseTemplate();
+  response["data"]["content"] = "M999: not found";
+  EXPECT_EQ(result, response);
 }
 
-TEST(InteractionLibTest, Handler_Handle_ForwardToSlowBot_3Modules) {
+TEST(InteractionLibTest, Handler_Handle_TwoKnownOneUnknown) {
   nlohmann::json request = MakeRequest("T313 & T329 & M999");
   ou_modules_bot_interaction::Handler handler(request);
+  nlohmann::json result = nlohmann::json::parse(handler.Handle());
 
-  EXPECT_EQ(handler.Handle(), R"({"type": 5})");
-
-  EXPECT_TRUE(handler.ShouldForwardToSlowBot());
-  EXPECT_EQ(nlohmann::json::parse(handler.PubSubJsonDump()), R"({
-    "interaction_id": "fake_request_id",
-    "message": {"channel_id": "fake_channel_id", "content": "T313 & T329 & M999"},
-    "target_id": "foo",
-    "guild_id": "fake_guild_id",
-    "token": "fake_token"})"_json);
+  auto response = GetResponseTemplate();
+  response["data"]["embeds"] = R"([{"fields": [{}, {}, {}]}])"_json;
+  response["data"]["embeds"][0]["fields"][0]["name"] = "T313";
+  response["data"]["embeds"][0]["fields"][0]["value"] =
+      " * [Renewable energy](<http://www.open.ac.uk/courses/modules/t313>)";
+  response["data"]["embeds"][0]["fields"][1]["name"] = "T329";
+  response["data"]["embeds"][0]["fields"][1]["value"] =
+      " * [Mechanical engineering: computer-aided engineering]"
+      "(<https://www.open.ac.uk/courses/modules/t329>)";
+  response["data"]["embeds"][0]["fields"][2]["name"] = "M999";
+  response["data"]["embeds"][0]["fields"][2]["value"] = " * not found";
+  EXPECT_EQ(result, response);
 }
 
 int main(int argc, char **argv) {

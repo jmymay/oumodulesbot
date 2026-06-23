@@ -57,7 +57,7 @@ public:
                      [](unsigned char c) { return std::toupper(c); });
       auto result = (*cache_)[uppercase];
       if (result.is_null()) {
-        return nullptr;
+        return {{"code", uppercase}, {"full_name", "not found"}, {"url", nullptr}};
       }
       return {
           {"code", uppercase}, {"full_name", result[0]}, {"url", result[1]}};

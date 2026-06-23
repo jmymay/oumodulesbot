@@ -1,6 +1,5 @@
 #include "interaction_lib.h"
 
-#include <google/protobuf/stubs/port.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json_fwd.hpp>
 #include <set>
@@ -31,7 +30,6 @@ public:
     guild_id_ = request_json.value("guild_id", "@me");
     token_ = request_json["token"];
     interaction_id_ = request_json["id"];
-    should_pubsub_ = false;
   }
   std::string Handle() {
     ou_modules_bot::OUNames names(message_.value("content", ""));
@@ -39,10 +37,6 @@ public:
     std::set<std::string> seen;
     ou_modules_bot::OUNames::Iterator it = names.GetIterator();
     while (it.NextItem(item)) {
-      if (item.is_null()) {
-        should_pubsub_ = true;
-        return MakePubSubResult();
-      }
       if (seen.find(item["code"]) == seen.end()) {
         seen.insert(item["code"]);
         fields_.push_back(CreateEmbedField(item));
@@ -51,16 +45,6 @@ public:
 
     return MakeResult(item);
   }
-  nlohmann::json PubSubJson() {
-    nlohmann::json pubsub_json;
-    pubsub_json["guild_id"] = guild_id_;
-    pubsub_json["target_id"] = target_id_;
-    pubsub_json["message"] = message_;
-    pubsub_json["token"] = token_;
-    pubsub_json["interaction_id"] = interaction_id_;
-    return pubsub_json;
-  }
-  bool ShouldForwardToSlowBot() { return should_pubsub_; }
 
 private:
   std::string MakeResult(nlohmann::json::const_reference last_item) {
@@ -120,10 +104,6 @@ private:
     }
   }
 
-  std::string MakePubSubResult() {
-    return "{\"type\": 5}";
-  }
-
   std::string guild_id_;
   std::string target_id_;
   std::string token_;
@@ -131,7 +111,6 @@ private:
   nlohmann::json message_;
   std::vector<nlohmann::json> fields_;
   std::array<nlohmann::json, 1> embeds_ = {nlohmann::json()};
-  bool should_pubsub_;
 };
 
 Handler::Handler(nlohmann::json::const_reference request_json) {
@@ -140,9 +119,5 @@ Handler::Handler(nlohmann::json::const_reference request_json) {
 Handler::~Handler() = default;
 
 std::string Handler::Handle() { return impl_->Handle(); }
-
-bool Handler::ShouldForwardToSlowBot() { return impl_->ShouldForwardToSlowBot(); }
-
-std::string Handler::PubSubJsonDump() { return impl_->PubSubJson().dump(); }
 
 } // namespace ou_modules_bot_interaction

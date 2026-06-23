@@ -12,8 +12,6 @@ public:
     ~Handler();
 
     std::string Handle();
-    bool ShouldForwardToSlowBot();
-    std::string PubSubJsonDump();
 
 private:
     class Impl;

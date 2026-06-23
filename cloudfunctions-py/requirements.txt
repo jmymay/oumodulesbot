@@ -1,5 +1,0 @@
-functions-framework==3.*
-PyNaCl
-git+https://github.com/jmymay/oumodulesbot.git
-google-cloud-pubsub
-google-cloud-firestore

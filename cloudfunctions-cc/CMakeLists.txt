@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.24)
 
 project(OUBotInteractions)
 
-find_package(google_cloud_cpp_pubsub CONFIG REQUIRED)
 find_package(functions_framework_cpp REQUIRED)
 find_package(nlohmann_json 3.11.2 REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -12,7 +11,6 @@ target_compile_features(interaction_lib PRIVATE cxx_std_17)
 target_link_libraries(
     interaction_lib
     functions-framework-cpp::framework
-    google-cloud-cpp::pubsub google-cloud-cpp::pubsub_protos
     nlohmann_json::nlohmann_json
     OpenSSL::Crypto)
 

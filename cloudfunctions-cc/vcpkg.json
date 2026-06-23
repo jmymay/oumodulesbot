@@ -3,12 +3,6 @@
   "version-string": "unversioned",
   "dependencies": [
     "functions-framework-cpp",
-    {
-      "name": "google-cloud-cpp",
-      "features": [
-        "pubsub"
-      ]
-    },
     "nlohmann-json",
     "openssl"
   ]
