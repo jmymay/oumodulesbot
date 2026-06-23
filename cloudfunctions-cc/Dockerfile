@@ -20,7 +20,6 @@ WORKDIR /r
 # Copy the program from the previously created stage and the shared libraries it
 # depends on.
 COPY --from=build /v/binary/interaction /r
-COPY --from=build /v/binary/roots.pem /usr/share/grpc/roots.pem
 COPY --from=build /v/source/cache.json /r
 COPY --from=build /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
 COPY --from=build /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6
